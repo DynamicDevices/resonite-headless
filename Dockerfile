@@ -1,6 +1,6 @@
-FROM	ubuntu:oracular
+FROM	ubuntu:bionic
 
-LABEL	name=resonite-headless org.opencontainers.image.authors="panther.ru@gmail.com"
+LABEL	name=resonite-headless org.opencontainers.image.authors="panther.ru@gmail.com,ajlennon@dynamicdevices.co.uk"
 
 ENV	STEAMAPPID=2519830 \
 	STEAMAPP=resonite \
@@ -17,8 +17,11 @@ ENV	STEAMAPPDIR="${HOMEDIR}/${STEAMAPP}-headless"
 RUN	set -x && \
 	apt -y update && \
 	apt -y upgrade && \
-	apt -y install curl lib32gcc-s1 libopus-dev libopus0 opus-tools libc6-dev libfreetype6 dotnet-runtime-9.0 && \
-	rm -rf /var/lib/{apt,dpkg,cache}
+	apt -y install curl libopus-dev libopus0 opus-tools libc6-dev libfreetype6 wget && \
+        . /etc/os-release && \
+        wget https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+        dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && apt -y update && \
+        rm -rf /var/lib/{apt,dpkg,cache}
 
 # Add locales
 RUN	apt-get update && \
